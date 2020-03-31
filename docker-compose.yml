@@ -1,0 +1,31 @@
+version: "3"
+services:
+  mongodb:
+    image: mongodb
+    container_name: fsaycondev-mongodb
+    build:
+      context: .
+      dockerfile: mongo.Dockerfile
+    restart: always
+    volumes:
+      - mongodb-vol:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: fsaycondev-mongodb
+  graphql-server:
+    image: graphql-server
+    container_name: fsaycondev-express-boilerplate
+    build:
+      context: .
+      dockerfile: server.Dockerfile
+    ports:
+      - 3000:3000
+    restart: on-failure
+    volumes:
+      - ./src:/app/src
+    environment:
+      TZ: UTC
+      NODE_ENV: development
+volumes:
+  mongodb-vol:

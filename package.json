@@ -1,5 +1,5 @@
 {
-  "name": "express-authentication-boilerplate",
+  "name": "fsaycondev-express-boilerplate",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -36,6 +36,8 @@
       "**/__tests__/**",
       "*.test.js",
       "*.spec.js"
-    ]
+    ],
+    "legacyWatch": true,
+    "pollingInterval": 1000
   }
 }
