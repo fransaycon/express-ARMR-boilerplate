@@ -12,7 +12,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 var router = _express["default"].Router();
 
 router.use("/", function (_req, res) {
-  res.send("HELLO FRAN!");
+  res.send("HELLO WORLD!");
 });
 var _default = router;
 exports["default"] = _default;
