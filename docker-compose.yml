@@ -9,10 +9,8 @@ services:
     restart: always
     volumes:
       - mongodb-vol:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password
-      MONGO_INITDB_DATABASE: fsaycondev-mongodb
+    env_file:
+      - mongo.env
   graphql-server:
     image: graphql-server
     container_name: fsaycondev-express-boilerplate
@@ -24,8 +22,7 @@ services:
     restart: on-failure
     volumes:
       - ./src:/app/src
-    environment:
-      TZ: UTC
-      NODE_ENV: development
+    env_file:
+      - server.env
 volumes:
   mongodb-vol:
