@@ -50,7 +50,17 @@
     "legacyWatch": true,
     "pollingInterval": 1000
   },
+  "eslintConfig": {
+    "extends": "airbnb-base",
+    "env": {
+      "es6": true,
+      "browser": true
+    }
+  },
   "devDependencies": {
-    "@babel/plugin-transform-runtime": "^7.9.0"
+    "@babel/plugin-transform-runtime": "^7.9.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2"
   }
 }
