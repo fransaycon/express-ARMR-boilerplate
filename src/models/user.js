@@ -1,5 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 
+const COLLECTION_NAME = 'users';
+
 const UserSchema = new Schema({
   _id: {
     type: Schema.Types.ObjectId,
@@ -40,6 +42,14 @@ function handleDates(next) {
   next();
 }
 
+async function handleLogin() {
+  const now = new Date();
+  this.lastLoggedIn = now;
+  await this.save();
+}
+
 UserSchema.pre('save', handleDates);
 
-export default mongoose.model('users', UserSchema);
+UserSchema.methods.login = handleLogin;
+
+export default mongoose.model(COLLECTION_NAME, UserSchema);
