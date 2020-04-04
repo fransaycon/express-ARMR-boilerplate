@@ -1,10 +1,13 @@
 import express from 'express';
-import indexRouter from './routes';
+import bodyParser from 'body-parser';
+import authRouter from './routes/auth';
 import config from './config';
 import connectDb from './lib/connect-db';
 
 const server = express();
-server.use('/', indexRouter);
+
+server.use(bodyParser.json());
+server.use('/', authRouter);
 
 const startServer = async () => {
   await connectDb();
