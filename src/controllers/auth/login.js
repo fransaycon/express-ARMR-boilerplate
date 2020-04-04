@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import User from '../../models/user';
+import UserPasswordMismatch from '../../errors/auth/user-password-mismatch';
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -8,7 +9,7 @@ const login = async (req, res) => {
 
   const passwordMatched = await bcrypt.compare(password, user.password);
   if (!passwordMatched) {
-    res.send({ success: false });
+    throw new UserPasswordMismatch();
   } else {
     await user.login();
     res.send({ success: true });

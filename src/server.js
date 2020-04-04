@@ -3,11 +3,13 @@ import bodyParser from 'body-parser';
 import authRouter from './routes/auth';
 import config from './config';
 import connectDb from './lib/connect-db';
+import errorMiddleware from './middlewares/error';
 
 const server = express();
 
 server.use(bodyParser.json());
 server.use('/', authRouter);
+server.use(errorMiddleware);
 
 const startServer = async () => {
   await connectDb();
