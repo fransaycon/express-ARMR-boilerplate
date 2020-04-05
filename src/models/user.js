@@ -19,6 +19,9 @@ const UserSchema = new Schema({
   lastLoggedIn: {
     type: Date,
   },
+  lastFailedLogin: {
+    type: Date,
+  },
   loginAttempts: {
     type: Number,
     required: true,
@@ -34,7 +37,7 @@ const UserSchema = new Schema({
 });
 
 function handleDates(next) {
-  const now = new Date();
+  const now = Date.now();
   if (!this.createdAt) {
     this.createdAt = now;
   }
@@ -43,13 +46,23 @@ function handleDates(next) {
 }
 
 async function handleLogin() {
-  const now = new Date();
+  const now = Date.now();
   this.lastLoggedIn = now;
+  this.loginAttempts = 0;
+  await this.save();
+}
+
+async function handleFailedLogin() {
+  const now = Date.now();
+  this.lastFailedLogin = now;
+  this.loginAttempts += 1;
   await this.save();
 }
 
 UserSchema.pre('save', handleDates);
 
 UserSchema.methods.login = handleLogin;
+UserSchema.methods.failLogin = handleFailedLogin;
+
 
 export default mongoose.model(COLLECTION_NAME, UserSchema);
