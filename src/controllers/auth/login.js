@@ -9,7 +9,7 @@ const login = async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  if (user.loginAttempts > config.MAX_LOGIN_ATTEMPTS) {
+  if (user.loginAttempts >= config.MAX_LOGIN_ATTEMPTS) {
     const cooldownDate = new Date(
       user.lastFailedLogin.getTime()
       + config.LOGIN_COOLDOWN_IN_MINUTES * 60000,
