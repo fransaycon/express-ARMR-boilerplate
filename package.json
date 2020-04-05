@@ -9,7 +9,8 @@
     "clean": "rimraf dist",
     "build": "npm-run-all clean transpile",
     "dev": "npm-run-all build start",
-    "watch:dev": "nodemon"
+    "watch:dev": "nodemon",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +21,7 @@
     "@babel/runtime": "^7.9.2",
     "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
+    "casual": "^1.6.2",
     "express": "^4.17.1",
     "express-jwt": "^5.3.1",
     "mongoose": "^5.9.7",
@@ -57,8 +59,13 @@
     "extends": "airbnb-base",
     "env": {
       "es6": true,
-      "browser": true
+      "browser": true,
+      "mocha": true,
+      "jest": true
     }
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.9.0",
