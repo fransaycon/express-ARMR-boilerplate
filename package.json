@@ -17,8 +17,10 @@
   "dependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.9.0",
     "@babel/preset-env": "^7.9.0",
     "@babel/runtime": "^7.9.2",
+    "babel-eslint": "^10.1.0",
     "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
     "casual": "^1.6.2",
@@ -40,7 +42,8 @@
         {
           "regenerator": true
         }
-      ]
+      ],
+      "@babel/plugin-proposal-optional-chaining"
     ]
   },
   "nodemonConfig": {
@@ -63,7 +66,8 @@
       "browser": true,
       "mocha": true,
       "jest": true
-    }
+    },
+    "parser": "babel-eslint"
   },
   "jest": {
     "testEnvironment": "node"
