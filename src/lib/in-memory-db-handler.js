@@ -9,9 +9,6 @@ const mongod = new MongoMemoryServer();
 export const connectTestDatabase = async () => {
   const uri = await mongod.getConnectionString();
   await mongoose.connect(uri, {
-    autoReconnect: true,
-    reconnectInterval: 1000,
-    reconnectTries: Number.MAX_VALUE,
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
