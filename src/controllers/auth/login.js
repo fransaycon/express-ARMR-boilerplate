@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import config from '../../config';
 import UserMaxLoginTries from '../../errors/auth/user-max-login-tries';
 import UserPasswordMismatch from '../../errors/auth/user-password-mismatch';
@@ -27,7 +28,14 @@ const login = async (req, res) => {
     throw new UserPasswordMismatch();
   } else {
     await user.login();
-    res.send({ success: true });
+    const token = jwt.sign({ id: user.id }, process.env.PRIVATE_KEY, { algorithm: 'RS256', expiresIn: `${config.JWT_EXPIRATION_IN_DAYS}d` });
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDay() + config.COOKIE_EXPIRATION_IN_DAYS);
+    res.cookie('Authorization', `Bearer ${token}`, {
+      httpOnly: true,
+      expires: expirationDate,
+    });
+    res.json({ success: true });
   }
 };
 

@@ -1,5 +1,6 @@
 import casual from 'casual';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import User from '../../models/user';
 import login from './login';
 import UserPasswordMismatch from '../../errors/auth/user-password-mismatch';
@@ -20,7 +21,8 @@ describe('Login Controller', () => {
     },
   };
   const resMock = {
-    send: jest.fn(),
+    json: jest.fn(),
+    cookie: jest.fn(),
   };
   const now = casual.moment.toDate();
 
@@ -33,14 +35,25 @@ describe('Login Controller', () => {
   });
 
   it('should be able to login properly', async (done) => {
+    const token = casual.word;
+    const expirationDate = casual.date;
     jest.spyOn(bcrypt, 'compare').mockReturnValue(true);
     jest.spyOn(User, 'findOne').mockReturnValue(Promise.resolve(userMock));
+    const signToken = jest.spyOn(jwt, 'sign').mockReturnValue(token);
+    jest.mock('Date');
 
     await login(reqMock, resMock);
 
-    expect(resMock.send).toHaveBeenCalledTimes(1);
+    expect(resMock.json).toHaveBeenCalledTimes(1);
+    expect(resMock.cookie).toHaveBeenCalledWith('Authorization', `Bearer ${token}`, {
+      httpOnly: true,
+      expires: expirationDate,
+    });
+    expect(signToken).toHaveBeenCalledTimes(1);
+    expect(Date).toHaveBeenCalledTimes(1);
     expect(userMock.login).toHaveBeenCalledTimes(1);
 
+    Date.clearMock();
     done();
   });
 

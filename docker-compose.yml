@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: mongo.Dockerfile
+    ports:
+      - 27017:27017
     restart: always
     volumes:
       - mongodb-vol:/data/db

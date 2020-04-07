@@ -2,6 +2,8 @@ const config = {
   PORT: 3000,
   MAX_LOGIN_ATTEMPTS: 5,
   LOGIN_COOLDOWN_IN_MINUTES: 5,
+  JWT_EXPIRATION_IN_DAYS: 30,
+  COOKIE_EXPIRATION_IN_DAYS: 30,
 };
 
 export default config;
