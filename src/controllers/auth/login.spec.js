@@ -1,6 +1,7 @@
 import casual from 'casual';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import lolex from 'lolex';
 import User from '../../models/user';
 import login from './login';
 import UserPasswordMismatch from '../../errors/auth/user-password-mismatch';
@@ -24,23 +25,18 @@ describe('Login Controller', () => {
     json: jest.fn(),
     cookie: jest.fn(),
   };
-  const now = casual.moment.toDate();
 
-  beforeEach(() => {
-    jest.spyOn(Date, 'now').mockReturnValue(now);
-  });
+  let clock = null;
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('should be able to login properly', async (done) => {
+  const runLoginTests = async () => {
     const token = casual.word;
-    const expirationDate = casual.date;
+    const expirationDate = new Date();
+    expirationDate.setDate(expirationDate.getDay() + config.COOKIE_EXPIRATION_IN_DAYS);
+
+    const signTokenSpy = jest.spyOn(jwt, 'sign').mockReturnValue(token);
+
     jest.spyOn(bcrypt, 'compare').mockReturnValue(true);
     jest.spyOn(User, 'findOne').mockReturnValue(Promise.resolve(userMock));
-    const signToken = jest.spyOn(jwt, 'sign').mockReturnValue(token);
-    jest.mock('Date');
 
     await login(reqMock, resMock);
 
@@ -49,11 +45,18 @@ describe('Login Controller', () => {
       httpOnly: true,
       expires: expirationDate,
     });
-    expect(signToken).toHaveBeenCalledTimes(1);
-    expect(Date).toHaveBeenCalledTimes(1);
+    expect(signTokenSpy).toHaveBeenCalledTimes(1);
     expect(userMock.login).toHaveBeenCalledTimes(1);
+  };
 
-    Date.clearMock();
+  beforeEach(() => { clock = lolex.install(); });
+  afterEach(() => {
+    clock = clock.uninstall();
+    jest.clearAllMocks();
+  });
+
+  it('should be able to login properly', async (done) => {
+    await runLoginTests();
     done();
   });
 
@@ -72,10 +75,11 @@ describe('Login Controller', () => {
   });
 
   it('should throw an error when user exceeded login attempts while in cooldown period', async (done) => {
+    const randomDate = new Date();
     const updatedUserMock = {
       ...userMock,
       loginAttempts: config.MAX_LOGIN_ATTEMPTS + 1,
-      lastFailedLogin: now,
+      lastFailedLogin: randomDate,
     };
     jest.spyOn(User, 'findOne').mockReturnValue(Promise.resolve(updatedUserMock));
 
@@ -89,20 +93,17 @@ describe('Login Controller', () => {
   });
 
   it('should login successfully when user exceeded login attempts outside cooldown period', async (done) => {
+    const randomDate = new Date();
     const updatedUserMock = {
       ...userMock,
       loginAttempts: config.MAX_LOGIN_ATTEMPTS + 1,
       lastFailedLogin: new Date(
-        now.getTime() - ((config.LOGIN_COOLDOWN_IN_MINUTES + 1) * 60000),
+        randomDate.getTime() - ((config.LOGIN_COOLDOWN_IN_MINUTES + 1) * 60000),
       ),
     };
     jest.spyOn(User, 'findOne').mockReturnValue(Promise.resolve(updatedUserMock));
-    jest.spyOn(bcrypt, 'compare').mockReturnValue(true);
 
-    await login(reqMock, resMock);
-
-    expect(userMock.login).toHaveBeenCalledTimes(1);
-    expect(resMock.send).toHaveBeenCalledTimes(1);
+    await runLoginTests();
 
     done();
   });

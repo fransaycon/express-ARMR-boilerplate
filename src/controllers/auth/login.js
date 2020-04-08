@@ -11,11 +11,10 @@ const login = async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user.loginAttempts >= config.MAX_LOGIN_ATTEMPTS) {
-    const cooldownDate = new Date(
-      user.lastFailedLogin.getTime()
-      + config.LOGIN_COOLDOWN_IN_MINUTES * 60000,
-    );
-    const now = Date.now();
+    const cooldownDate = new Date();
+    console.log(cooldownDate);
+    cooldownDate.setDate(user.lastFailedLogin.getTime() + config.LOGIN_COOLDOWN_IN_MINUTES * 60000);
+    const now = new Date();
 
     if (now <= cooldownDate) {
       throw new UserMaxLoginTries();
