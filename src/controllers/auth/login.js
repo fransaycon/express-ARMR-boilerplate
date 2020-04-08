@@ -12,7 +12,6 @@ const login = async (req, res) => {
 
   if (user.loginAttempts >= config.MAX_LOGIN_ATTEMPTS) {
     const cooldownDate = new Date();
-    console.log(cooldownDate);
     cooldownDate.setDate(user.lastFailedLogin.getTime() + config.LOGIN_COOLDOWN_IN_MINUTES * 60000);
     const now = new Date();
 
