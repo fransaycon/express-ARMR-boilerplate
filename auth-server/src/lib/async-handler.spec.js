@@ -1,10 +1,10 @@
-import asyncHandler from './async-handler';
+import asyncHandler from "./async-handler";
 
-describe('lib/async-handler', () => {
+describe("lib/async-handler", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
-  it('should wrap a function under a promise and resolve a callback.', async (done) => {
+  it("should wrap a function under a promise and resolve a callback.", async (done) => {
     const callback = jest.fn();
 
     const callAsyncFunction = asyncHandler(callback);
@@ -14,7 +14,7 @@ describe('lib/async-handler', () => {
     done();
   });
 
-  it('should wrap a function under a promise and reject if callback throws.', async (done) => {
+  it("should wrap a function under a promise and reject if callback throws.", async (done) => {
     const callback = () => {
       throw new Error();
     };

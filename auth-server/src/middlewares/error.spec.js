@@ -1,7 +1,7 @@
-import casual from 'casual';
-import errorMiddleware from './error';
+import casual from "casual";
+import errorMiddleware from "./error";
 
-describe('Error Middleware', () => {
+describe("Error Middleware", () => {
   it("should send the error's status and message", async (done) => {
     const error = {
       statusCode: casual.integer(0, 10),
@@ -20,7 +20,7 @@ describe('Error Middleware', () => {
     done();
   });
 
-  it('should call next when headersSent', async (done) => {
+  it("should call next when headersSent", async (done) => {
     const error = {
       statusCode: casual.integer(0, 10),
       message: casual.string,

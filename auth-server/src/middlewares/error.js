@@ -4,7 +4,9 @@ const errorMiddleware = (err, req, res, next) => {
     return next(err);
   }
   res.status(err.statusCode || 500);
-  res.json({ message: err.message || 'Something went wrong. Please try again.' });
+  res.json({
+    message: err.message || "Something went wrong. Please try again.",
+  });
 };
 
 export default errorMiddleware;
