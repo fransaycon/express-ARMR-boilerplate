@@ -1,8 +1,12 @@
-import casual from 'casual';
-import User from './user';
-import { connectTestDatabase, clearTestDatabase, closeTestDatabase } from '../lib/in-memory-db-handler';
+import casual from "casual";
+import User from "./user";
+import {
+  connectTestDatabase,
+  clearTestDatabase,
+  closeTestDatabase,
+} from "../lib/in-memory-db-handler";
 
-describe('User model', () => {
+describe("User model", () => {
   const userProperties = {
     email: casual.email,
     password: casual.password,
@@ -14,7 +18,7 @@ describe('User model', () => {
   const now = casual.moment.toDate();
 
   beforeEach(async () => {
-    jest.spyOn(Date, 'now').mockReturnValue(now);
+    jest.spyOn(Date, "now").mockReturnValue(now);
     await User.create(userProperties);
     user = await User.findOne({ email: userProperties.email });
   });
@@ -28,7 +32,7 @@ describe('User model', () => {
     await closeTestDatabase();
   });
 
-  it('should be created properly', async (done) => {
+  it("should be created properly", async (done) => {
     expect(user.email).toBe(userProperties.email);
     expect(user.password).toBe(userProperties.password);
     expect(user.createdAt).toBeTruthy();
@@ -39,7 +43,7 @@ describe('User model', () => {
     done();
   });
 
-  it('should have a method login that will update user details', async (done) => {
+  it("should have a method login that will update user details", async (done) => {
     await user.login();
 
     expect(user.lastLoggedIn.getMonth()).toBe(now.getMonth());
@@ -50,7 +54,7 @@ describe('User model', () => {
     done();
   });
 
-  it('should have a method failLogin that will update user details', async (done) => {
+  it("should have a method failLogin that will update user details", async (done) => {
     await user.failLogin();
 
     expect(user.lastFailedLogin.getMonth()).toBe(now.getMonth());
@@ -64,7 +68,7 @@ describe('User model', () => {
     done();
   });
 
-  it('should have a method login that will reset login attempts to 0', async (done) => {
+  it("should have a method login that will reset login attempts to 0", async (done) => {
     await user.failLogin();
     await user.login();
 

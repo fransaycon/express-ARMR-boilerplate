@@ -1,14 +1,14 @@
-import casual from 'casual';
-import jwt from 'jsonwebtoken';
-import isAuthorized from './is-authorized';
-import User from '../models/user';
-import UserForbidden from '../errors/auth/user-forbidden';
-import UserNotFound from '../errors/auth/user-not-found';
+import casual from "casual";
+import jwt from "jsonwebtoken";
+import isAuthorized from "./is-authorized";
+import User from "../models/user";
+import UserForbidden from "../errors/auth/user-forbidden";
+import UserNotFound from "../errors/auth/user-not-found";
 
-describe('isAuthorized Middleware', () => {
+describe("isAuthorized Middleware", () => {
   let reqMock = null;
   const nextMock = jest.fn();
-  const PUBLIC_KEY = casual.word;
+  const TOKEN_PUBLIC_KEY = casual.word;
 
   beforeEach(() => {
     reqMock = {
@@ -16,7 +16,7 @@ describe('isAuthorized Middleware', () => {
         Authorization: `Bearer: ${casual.string}`,
       },
     };
-    process.env.PUBLIC_KEY = PUBLIC_KEY;
+    process.env.TOKEN_PUBLIC_KEY = TOKEN_PUBLIC_KEY;
   });
 
   afterEach(() => {
@@ -24,25 +24,29 @@ describe('isAuthorized Middleware', () => {
     jest.resetModules();
   });
 
-  it('should populate req.user when cookie is valid.', async (done) => {
+  it("should populate req.user when cookie is valid.", async (done) => {
     const fakeEmail = casual.email;
     const id = casual.word;
 
-    const jwtSpy = jest.spyOn(jwt, 'verify').mockReturnValue({ id });
-    const userSpy = jest.spyOn(User, 'findById').mockReturnValue(Promise.resolve({
-      email: fakeEmail,
-    }));
-    const token = reqMock.cookies.Authorization.replace('Bearer ', '');
+    const jwtSpy = jest.spyOn(jwt, "verify").mockReturnValue({ id });
+    const userSpy = jest.spyOn(User, "findById").mockReturnValue(
+      Promise.resolve({
+        email: fakeEmail,
+      })
+    );
+    const token = reqMock.cookies.Authorization.replace("Bearer ", "");
 
     await isAuthorized(reqMock, null, nextMock);
-    expect(jwtSpy).toHaveBeenCalledWith(token, PUBLIC_KEY);
+    expect(jwtSpy).toHaveBeenCalledWith(token, TOKEN_PUBLIC_KEY, {
+      algorithms: "RS256",
+    });
     expect(userSpy).toHaveBeenCalledWith(id);
     expect(nextMock).toHaveBeenCalledTimes(1);
     expect(reqMock.user).toStrictEqual({ email: fakeEmail });
     done();
   });
 
-  it('should throw a forbidden error when cookie lacks Authorization key', async (done) => {
+  it("should throw a forbidden error when cookie lacks Authorization key", async (done) => {
     delete reqMock.cookies.Authorization;
     try {
       await isAuthorized(reqMock, null, nextMock);
@@ -52,8 +56,10 @@ describe('isAuthorized Middleware', () => {
     done();
   });
 
-  it('should throw a forbidden error when jwt is invalid', async (done) => {
-    jest.spyOn(jwt, 'verify').mockReturnValue(() => { throw new Error(); });
+  it("should throw a forbidden error when jwt is invalid", async (done) => {
+    jest.spyOn(jwt, "verify").mockReturnValue(() => {
+      throw new Error();
+    });
 
     try {
       await isAuthorized(reqMock, null, nextMock);
@@ -63,7 +69,7 @@ describe('isAuthorized Middleware', () => {
     done();
   });
 
-  it('should throw a forbidden error when Authorization value is invalid', async (done) => {
+  it("should throw a forbidden error when Authorization value is invalid", async (done) => {
     reqMock.cookies.Authorization = casual.string;
     try {
       await isAuthorized(reqMock, null, nextMock);
@@ -73,9 +79,11 @@ describe('isAuthorized Middleware', () => {
     done();
   });
 
-  it('should throw a forbidden error when user database fetching throws an error', async (done) => {
-    jest.spyOn(jwt, 'verify').mockReturnValue({ id: casual.string });
-    jest.spyOn(User, 'findById').mockReturnValue(() => { throw new Error(); });
+  it("should throw a forbidden error when user database fetching throws an error", async (done) => {
+    jest.spyOn(jwt, "verify").mockReturnValue({ id: casual.string });
+    jest.spyOn(User, "findById").mockReturnValue(() => {
+      throw new Error();
+    });
     try {
       await isAuthorized(reqMock, null, nextMock);
     } catch (error) {
@@ -84,9 +92,9 @@ describe('isAuthorized Middleware', () => {
     done();
   });
 
-  it('should throw a not found error when no user was fetched from db', async (done) => {
-    jest.spyOn(jwt, 'verify').mockReturnValue({ id: casual.string });
-    jest.spyOn(User, 'findById').mockReturnValue(null);
+  it("should throw a not found error when no user was fetched from db", async (done) => {
+    jest.spyOn(jwt, "verify").mockReturnValue({ id: casual.string });
+    jest.spyOn(User, "findById").mockReturnValue(null);
     try {
       await isAuthorized(reqMock, null, nextMock);
     } catch (error) {

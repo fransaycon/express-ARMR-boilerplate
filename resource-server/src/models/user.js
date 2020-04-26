@@ -1,6 +1,6 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema } from "mongoose";
 
-const COLLECTION_NAME = 'users';
+const COLLECTION_NAME = "users";
 
 const UserSchema = new Schema({
   _id: {
@@ -59,10 +59,9 @@ async function handleFailedLogin() {
   await this.save();
 }
 
-UserSchema.pre('save', handleDates);
+UserSchema.pre("save", handleDates);
 
 UserSchema.methods.login = handleLogin;
 UserSchema.methods.failLogin = handleFailedLogin;
-
 
 export default mongoose.model(COLLECTION_NAME, UserSchema);
