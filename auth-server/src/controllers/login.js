@@ -28,26 +28,23 @@ const login = async (req, res) => {
     throw new UserPasswordMismatch();
   } else {
     await user.login();
+
     const token = jwt.sign({ id: user.id }, process.env.TOKEN_PRIVATE_KEY, {
       algorithm: "RS256",
       expiresIn: `${config.TOKEN_EXPIRATION_IN_MINUTES}m`,
     });
-    const refreshToken = jwt.sign({ token }, process.env.REFRESH_PRIVATE_KEY, {
-      algorithm: "RS256",
-      expiresIn: `${config.REFRESH_EXPIRATION_IN_MINUTES}m`,
-    });
-    const expirationDate = new Date();
-    expirationDate.setDate(
-      expirationDate.getDay() + config.REFRESH_EXPIRATION_IN_MINUTES
+
+    const refreshToken = jwt.sign(
+      { id: user.id },
+      process.env.REFRESH_PRIVATE_KEY,
+      {
+        algorithm: "RS256",
+        expiresIn: `${config.REFRESH_EXPIRATION_IN_MINUTES}m`,
+      }
     );
-    res.cookie("Authorization", `Bearer ${token}`, {
-      httpOnly: true,
-      expires: expirationDate,
-    });
-    res.cookie("RefreshToken", refreshToken, {
-      httpOnly: true,
-      expires: expirationDate,
-    });
+
+    res.cookie("Authorization", token, config.COOKIE_OPTIONS);
+    res.cookie("Refresh", refreshToken, config.COOKIE_OPTIONS);
     res.json({ success: true });
   }
 };

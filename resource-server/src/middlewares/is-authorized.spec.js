@@ -13,7 +13,7 @@ describe("isAuthorized Middleware", () => {
   beforeEach(() => {
     reqMock = {
       cookies: {
-        Authorization: `Bearer: ${casual.string}`,
+        Authorization: casual.string,
       },
     };
     process.env.TOKEN_PUBLIC_KEY = TOKEN_PUBLIC_KEY;

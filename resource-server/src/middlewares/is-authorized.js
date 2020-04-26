@@ -4,13 +4,14 @@ import UserNotFound from "../errors/auth/user-not-found";
 import User from "../models/user";
 
 const isAuthorized = async (req, res, next) => {
-  const authorization = req.cookies?.Authorization;
-  const token = authorization ? authorization.replace("Bearer ", "") : "";
-
   try {
-    const { id } = jwt.verify(token, process.env.TOKEN_PUBLIC_KEY, {
-      algorithms: "RS256",
-    });
+    const { id } = jwt.verify(
+      req.cookies?.Authorization,
+      process.env.TOKEN_PUBLIC_KEY,
+      {
+        algorithms: "RS256",
+      }
+    );
     const user = await User.findById(id);
     req.user = user;
   } catch (error) {

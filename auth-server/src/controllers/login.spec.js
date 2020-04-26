@@ -30,11 +30,6 @@ describe("Login Controller", () => {
 
   const runLoginTests = async () => {
     const token = casual.word;
-    const expirationDate = new Date();
-    expirationDate.setDate(
-      expirationDate.getDay() + config.REFRESH_EXPIRATION_IN_MINUTES
-    );
-
     const signTokenSpy = jest.spyOn(jwt, "sign").mockReturnValue(token);
 
     jest.spyOn(bcrypt, "compare").mockReturnValue(true);
@@ -43,19 +38,16 @@ describe("Login Controller", () => {
     await login(reqMock, resMock);
 
     expect(resMock.json).toHaveBeenCalledTimes(1);
-    expect(resMock.cookie).toHaveBeenCalledTimes(2);
     expect(resMock.cookie).toHaveBeenCalledWith(
       "Authorization",
-      `Bearer ${token}`,
-      {
-        httpOnly: true,
-        expires: expirationDate,
-      }
+      token,
+      config.COOKIE_OPTIONS
     );
-    expect(resMock.cookie).toHaveBeenCalledWith("RefreshToken", token, {
-      httpOnly: true,
-      expires: expirationDate,
-    });
+    expect(resMock.cookie).toHaveBeenCalledWith(
+      "Refresh",
+      token,
+      config.COOKIE_OPTIONS
+    );
     expect(signTokenSpy).toHaveBeenCalledTimes(2);
     expect(userMock.login).toHaveBeenCalledTimes(1);
   };
