@@ -8,7 +8,7 @@ const isAuthorized = async (req, res, next) => {
   const token = authorization ? authorization.replace('Bearer ', '') : '';
 
   try {
-    const { id } = jwt.verify(token, process.env.PUBLIC_KEY);
+    const { id } = jwt.verify(token, process.env.TOKEN_PUBLIC_KEY, { algorithms: 'RS256' });
     const user = await User.findById(id);
     req.user = user;
   } catch (error) {

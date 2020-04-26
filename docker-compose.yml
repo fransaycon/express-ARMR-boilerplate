@@ -3,28 +3,24 @@ services:
   mongodb:
     image: mongodb
     container_name: fsaycondev-mongodb
-    build:
-      context: .
-      dockerfile: mongo.Dockerfile
+    build: mongo
     ports:
       - 27017:27017
     restart: always
     volumes:
       - mongodb-vol:/data/db
-    env_file:
-      - mongo.env
+    env_file: 
+      ./mongo/.env
   graphql-server:
     image: graphql-server
     container_name: fsaycondev-express-boilerplate
-    build:
-      context: .
-      dockerfile: server.Dockerfile
+    build: auth-server
     ports:
       - 3000:3000
     restart: on-failure
     volumes:
-      - ./src:/app/src
-    env_file:
-      - server.env
+      - ./auth-server/src:/app/src
+    env_file: 
+      ./auth-server/.env
 volumes:
   mongodb-vol:
