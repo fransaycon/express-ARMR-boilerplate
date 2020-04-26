@@ -2,7 +2,7 @@ version: "3"
 services:
   mongodb:
     image: mongodb
-    container_name: fsaycondev-mongodb
+    container_name: frexpress-mongodb
     build: mongo
     ports:
       - 27017:27017
@@ -11,9 +11,9 @@ services:
       - mongodb-vol:/data/db
     env_file: 
       ./mongo/.env
-  graphql-server:
-    image: graphql-server
-    container_name: fsaycondev-express-boilerplate
+  auth-server:
+    image: auth-server
+    container_name: frexpress-auth-server
     build: auth-server
     ports:
       - 3000:3000
@@ -22,5 +22,16 @@ services:
       - ./auth-server/src:/app/src
     env_file: 
       ./auth-server/.env
+  resource-server:
+    image: resource-server
+    container_name: frexpress-resource-server
+    build: resource-server
+    ports:
+      - 8000:8000
+    restart: on-failure
+    volumes:
+      - ./resource-server/src:/app/src
+    env_file: 
+      ./resource-server/.env
 volumes:
   mongodb-vol:
