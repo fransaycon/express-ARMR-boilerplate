@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import config from '../../config';
-import UserMaxLoginTries from '../../errors/auth/user-max-login-tries';
-import UserPasswordMismatch from '../../errors/auth/user-password-mismatch';
-import User from '../../models/user';
+import config from '../config';
+import UserMaxLoginTries from '../errors/user-max-login-tries';
+import UserPasswordMismatch from '../errors/user-password-mismatch';
+import User from '../models/user';
 
 const login = async (req, res) => {
   const { email, password } = req.body;

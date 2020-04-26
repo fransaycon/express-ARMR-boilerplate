@@ -1,6 +1,6 @@
 import express from 'express';
-import signup from '../controllers/auth/signup';
-import login from '../controllers/auth/login';
+import signup from '../controllers/signup';
+import login from '../controllers/login';
 import ash from '../lib/async-handler';
 
 const router = express.Router();

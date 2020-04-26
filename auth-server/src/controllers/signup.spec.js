@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import casual from 'casual';
 import signup from './signup';
-import User from '../../models/user';
-import UserEmailDuplicate from '../../errors/auth/user-email-duplicate';
+import User from '../models/user';
+import UserEmailDuplicate from '../errors/user-email-duplicate';
 
 class MongoDuplicateError extends Error {
   constructor() {

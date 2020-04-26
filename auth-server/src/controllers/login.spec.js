@@ -2,11 +2,11 @@ import casual from 'casual';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import lolex from 'lolex';
-import User from '../../models/user';
 import login from './login';
-import UserPasswordMismatch from '../../errors/auth/user-password-mismatch';
-import config from '../../config';
-import UserMaxLoginTries from '../../errors/auth/user-max-login-tries';
+import config from '../config';
+import UserMaxLoginTries from '../errors/user-max-login-tries';
+import UserPasswordMismatch from '../errors/user-password-mismatch';
+import User from '../models/user';
 
 describe('Login Controller', () => {
   const userMock = {
@@ -31,7 +31,7 @@ describe('Login Controller', () => {
   const runLoginTests = async () => {
     const token = casual.word;
     const expirationDate = new Date();
-    expirationDate.setDate(expirationDate.getDay() + config.COOKIE_EXPIRATION_IN_DAYS);
+    expirationDate.setDate(expirationDate.getDay() + config.REFRESH_EXPIRATION_IN_MINUTES);
 
     const signTokenSpy = jest.spyOn(jwt, 'sign').mockReturnValue(token);
 
@@ -41,11 +41,16 @@ describe('Login Controller', () => {
     await login(reqMock, resMock);
 
     expect(resMock.json).toHaveBeenCalledTimes(1);
+    expect(resMock.cookie).toHaveBeenCalledTimes(2);
     expect(resMock.cookie).toHaveBeenCalledWith('Authorization', `Bearer ${token}`, {
       httpOnly: true,
       expires: expirationDate,
     });
-    expect(signTokenSpy).toHaveBeenCalledTimes(1);
+    expect(resMock.cookie).toHaveBeenCalledWith('RefreshToken', token, {
+      httpOnly: true,
+      expires: expirationDate,
+    });
+    expect(signTokenSpy).toHaveBeenCalledTimes(2);
     expect(userMock.login).toHaveBeenCalledTimes(1);
   };
 

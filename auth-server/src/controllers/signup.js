@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import User from '../../models/user';
-import UserEmailDuplicate from '../../errors/auth/user-email-duplicate';
+import User from '../models/user';
+import UserEmailDuplicate from '../errors/user-email-duplicate';
 
 const SALT_ROUNDS = 10;
 const DUPLICATE_ERROR_CODE = 11000;
