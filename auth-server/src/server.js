@@ -3,7 +3,6 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import useragent from 'express-useragent';
 import authRouter from './routes/auth';
-import protectedRouter from './routes/protected';
 import config from './config';
 import connectDb from './lib/connect-db';
 import errorMiddleware from './middlewares/error';
@@ -14,7 +13,6 @@ server.use(bodyParser.json());
 server.use(useragent.express());
 server.use(cookieParser());
 server.use('/', authRouter);
-server.use('/protected', protectedRouter);
 server.use(errorMiddleware);
 
 const startServer = async () => {
