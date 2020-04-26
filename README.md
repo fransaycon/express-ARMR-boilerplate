@@ -1,6 +1,17 @@
-# FREXPRESS AUTH-RESOURCE-MONGODB REST BOILERPLATE
+# FREXPRESS ARMR BOILERPLATE
 
-This is a dockerized express starter application to kickstart the creation of an auth server and resource server REST API integrated with MongoDB.
+This is my take on an express auth and resource REST API server integrated with MongoDB.
+For ease of development and future deployment, all services are dockerized.
+
+This uses the following technology,
+
+- jsonwebtoken
+- bcrypt
+- express
+- mongodb
+- mongoose
+- docker
+- docker-compose
 
 ## Installation
 
