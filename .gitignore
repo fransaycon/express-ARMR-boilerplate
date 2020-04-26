@@ -1,3 +1,2 @@
-auth-server/node_modules
-resource-server/node_modules
+node_modules
 dist
