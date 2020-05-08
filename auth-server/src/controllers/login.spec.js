@@ -37,7 +37,11 @@ describe("Login Controller", () => {
 
     await login(reqMock, resMock);
 
-    expect(resMock.json).toHaveBeenCalledTimes(1);
+    expect(resMock.json).toHaveBeenCalledWith({
+      access_token_expires_second: config.TOKEN_EXPIRATION_IN_MINUTES * 1000, 
+      refresh_token_expires_second: config.REFRESH_EXPIRATION_IN_MINUTES * 1000,
+      success: true 
+    });
     expect(resMock.cookie).toHaveBeenCalledWith(
       "Authorization",
       token,

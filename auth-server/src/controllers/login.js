@@ -45,7 +45,11 @@ const login = async (req, res) => {
 
     res.cookie("Authorization", token, config.COOKIE_OPTIONS);
     res.cookie("Refresh", refreshToken, config.COOKIE_OPTIONS);
-    res.json({ success: true });
+    res.json({
+      access_token_expires_second: config.TOKEN_EXPIRATION_IN_MINUTES * 1000, 
+      refresh_token_expires_second: config.REFRESH_EXPIRATION_IN_MINUTES * 1000,
+      success: true 
+    });
   }
 };
 
